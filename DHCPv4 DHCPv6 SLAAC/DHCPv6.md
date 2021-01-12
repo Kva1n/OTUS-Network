@@ -4,7 +4,7 @@
 
 ### Topology
 
-![](./Карта сети.png)
+![](./NetMap.png)
 
 
 
