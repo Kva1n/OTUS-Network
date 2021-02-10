@@ -27,6 +27,8 @@
 ```
 R26(config)#router isis
 R26(config-router)#net 49.0026.2626.2626.2626.00
+R26(config-router)#passive-interface e0/1
+R26(config-router)#passive-interface e0/3
 R26(config-if)#int range e0/0-3
 R26(config-if-range)#ip router isis
 R26(config-if-range)#ipv6 router isis
@@ -35,6 +37,8 @@ R26(config-if-range)#ipv6 router isis
 ```
 R24(config)#router isis
 R24(config-router)#net 49.0024.2424.2424.2424.00
+R24(config-router)#passive-interface e0/0
+R24(config-router)#passive-interface e0/3
 R24(config)#int range e0/0-3
 R24(config-if-range)#ip router isis
 R24(config-if-range)#ipv6 router isis
@@ -43,6 +47,7 @@ R24(config-if-range)#ipv6 router isis
 ```
 R23(config)#router isis
 R23(config-router)#net 49.2222.2323.2323.2323.00
+R23(config-router)#passive-interface e0/0
 R23(config)#int range e0/0-2
 R23(config-if-range)#ip router isis
 R23(config-if-range)#ipv6 router isis
@@ -51,6 +56,8 @@ R23(config-if-range)#ipv6 router isis
 ```
 R25(config)#router isis
 R25(config-router)#net 49.2222.2525.2525.2525.00
+R25(config-router)#passive-interface e0/1
+R25(config-router)#passive-interface e0/3
 R25(config)#int range e0/0-3
 R25(config-if-range)#ip router isis
 R25(config-if-range)#ipv6 router isis
