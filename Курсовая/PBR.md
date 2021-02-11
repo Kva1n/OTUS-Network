@@ -58,7 +58,7 @@ R28(config)#interface Ethernet0/2.2
 R28(config-int)#ip policy route-map PBR
 ```
 
-Для проверки создадим ,будем использовать роутер R27 в Лабытнангах, настроим для этого маршруты и выполним задачу для офиса Лабытнангов:
+Для проверки будем использовать роутер R27 в Лабытнангах, настроим для этого маршруты и выполним задачу для офиса Лабытнангов:
 
 ```
 R27(config)#ip route 0.0.0.0 0.0.0.0 142.17.201.33
@@ -200,4 +200,140 @@ Number of failures: 0
 Operation time to live: Forever
 ```
 
-**Линки провайдера отслеживается.**
+Линки провайдера отслеживаются.
+
+#### Настройка Track
+
+```
+R28(config)#track 1 ip sla 1 reachability
+R28(config)#track 2 ip sla 2 reachability
+```
+
+Добавим контроль маршрутов по умолчанию:
+
+```
+R28(config)#ip route 0.0.0.0 0.0.0.0 142.17.201.73 track 1
+R28(config)#ip route 0.0.0.0 0.0.0.0 142.17.201.77 track 2
+```
+
+Изменим конфигурацию route-map:
+
+```
+R28(config)#route-map PBR permit 10
+R28(config-route-map)#no set ip next-hop 142.17.201.77
+R28(config-route-map)#set ip next-hop verify-availability 142.17.201.77 10 track 2
+R28(config-route-map)#route-map PBR permit 20
+R28(config-route-map)#no set ip next-hop 142.17.201.73
+R28(config-route-map)#set ip next-hop verify-availability 142.17.201.73 10 track 1
+```
+
+Проверим конфигурацию PBR:
+
+```
+R28#sh run | s route-map
+ ip policy route-map PBR
+ ip policy route-map PBR
+route-map PBR permit 10
+ match ip address VLAN3
+ set ip next-hop verify-availability 142.17.201.77 10 track 2
+route-map PBR permit 20
+ match ip address VLAN4
+ set ip next-hop verify-availability 142.17.201.73 20 track 1
+route-map PBR permit 30
+```
+
+```
+R28#sh route-map
+route-map PBR, permit, sequence 10
+  Match clauses:
+    ip address (access-lists): VLAN3
+  Set clauses:
+    ip next-hop verify-availability 142.17.201.77 10 track 2  [up]
+  Policy routing matches: 17 packets, 1818 bytes
+route-map PBR, permit, sequence 20
+  Match clauses:
+    ip address (access-lists): VLAN4
+  Set clauses:
+    ip next-hop verify-availability 142.17.201.73 20 track 1  [up]
+  Policy routing matches: 32 packets, 3444 bytes
+route-map PBR, permit, sequence 30
+  Match clauses:
+  Set clauses:
+  Policy routing matches: 0 packets, 0 bytes
+```
+
+Выполним трассировку для проверки работоспособности:
+
+**VPC30**
+
+```
+VPCS> trace 142.17.201.34
+trace to 142.17.201.34, 8 hops max, press Ctrl+C to stop
+ 1   192.168.3.1   0.510 ms  0.358 ms  0.442 ms
+ 2   142.17.201.77   0.609 ms  0.691 ms  0.497 ms
+ 3   10.130.2.25   1.024 ms  0.741 ms  0.592 ms
+ 4   *142.17.201.34   1.457 ms (ICMP type:3, code:3, Destination port unreachable)  *
+```
+
+**VPC31**
+
+```
+VPCS> trace 142.17.201.34
+trace to 142.17.201.34, 8 hops max, press Ctrl+C to stop
+ 1   192.168.4.1   0.849 ms  0.584 ms  0.609 ms
+ 2   142.17.201.73   1.156 ms  0.692 ms  0.714 ms
+ 3   *142.17.201.34   1.552 ms (ICMP type:3, code:3, Destination port unreachable)  *
+```
+
+Отключим один из интерфейсов провайдера: 
+
+```
+R26(config)#int e0/1
+R26(config-if)#shutdown
+```
+
+Проверим трассировку:
+
+**VPC30**
+
+```
+VPCS> trace 142.17.201.34
+trace to 142.17.201.34, 8 hops max, press Ctrl+C to stop
+ 1   192.168.3.1   0.503 ms  0.452 ms  0.450 ms
+ 2   142.17.201.73   0.746 ms  0.537 ms  0.681 ms
+ 3   *142.17.201.34   1.231 ms (ICMP type:3, code:3, Destination port unreachable)  *
+```
+
+**VPC31**
+
+```
+VPCS> trace 142.17.201.34
+trace to 142.17.201.34, 8 hops max, press Ctrl+C to stop
+ 1   192.168.4.1   0.477 ms  0.619 ms  0.621 ms
+ 2   142.17.201.73   0.741 ms  0.551 ms  0.628 ms
+ 3   *142.17.201.34   1.390 ms (ICMP type:3, code:3, Destination port unreachable)  *
+```
+
+Проверим route-map:
+
+```
+R28#sh route-map
+route-map PBR, permit, sequence 10
+  Match clauses:
+    ip address (access-lists): VLAN3
+  Set clauses:
+    ip next-hop verify-availability 142.17.201.77 10 track 2  [down]
+  Policy routing matches: 110 packets, 11988 bytes
+route-map PBR, permit, sequence 20
+  Match clauses:
+    ip address (access-lists): VLAN4
+  Set clauses:
+    ip next-hop verify-availability 142.17.201.73 20 track 1  [up]
+  Policy routing matches: 80 packets, 8676 bytes
+route-map PBR, permit, sequence 30
+  Match clauses:
+  Set clauses:
+  Policy routing matches: 0 packets, 0 bytes
+```
+
+**Переключение трафика при недоступности линка работает.**
