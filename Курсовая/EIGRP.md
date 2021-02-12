@@ -89,8 +89,8 @@ R32(config-router-af)#eigrp router-id 32.32.32.32
 ```
 R18(config)#ip route 0.0.0.0 0.0.0.0 142.17.201.21
 R18(config)#ip route 0.0.0.0 0.0.0.0 142.17.201.165
-R18(config)#ipv6 route ::0/0 2001:BB:FF:C130:0:520:D26:E03
-R18(config)#ipv6 route ::0/0 2001:BB:FF:C120:0:520:D24:E03
+R18(config)#ipv6 route ::/0 2001:BB:FF:C130:0:520:D26:E03
+R18(config)#ipv6 route ::/0 2001:BB:FF:C120:0:520:D24:E03
 R18(config)#router eigrp PITER
 R18(config-router)#address-family ipv4 autonomous-system 1
 R18(config-router-af)#topology base
