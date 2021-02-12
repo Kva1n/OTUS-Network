@@ -23,9 +23,9 @@
 ```
 R17(config)#router eigrp PITER
 R17(config-router)#address-family ipv4 autonomous-system 1
-R17(config-router-af)#network 172.16.100.0 255.255.255.0
-R17(config-router-af)#network 172.16.10.0 255.255.255.0
-R17(config-router-af)#network 172.21.0.0 255.255.0.0
+R17(config-router-af)#network 172.16.100.0 0.0.0.255
+R17(config-router-af)#network 172.16.10.0 0.0.0.255
+R17(config-router-af)#network 172.21.0.0 0.0.255.255
 R17(config-router-af)#eigrp router-id 17.17.17.17
 R17(config-router-af)#af-interface e0/0.1
 R17(config-router-af-interface)#passive-interface
@@ -40,10 +40,10 @@ R17(config-router-af-interface)#passive-interface
 ```
 R18(config)#router eigrp PITER
 R18(config-router)#address-family ipv4 autonomous-system 1
-R18(config-router-af)#network 172.22.0.0 255.255.0.0
-R18(config-router-af)#network 172.21.0.0 255.255.0.0
-R18(config-router-af)#network 142.17.201.20 255.255.255.252
-R18(config-router-af)#network 142.17.201.164 255.255.255.252
+R18(config-router-af)#network 172.22.0.0 0.0.255.255
+R18(config-router-af)#network 172.21.0.0 0.0.255.255
+R18(config-router-af)#network 142.17.201.20 0.0.0.3
+R18(config-router-af)#network 142.17.201.164 0.0.0.3
 R18(config-router-af)#eigrp router-id 18.18.18.18
 R18(config-router-af)#af-interface e0/2
 R18(config-router-af-interface)#passive-interface
@@ -60,10 +60,10 @@ R18(config-router-af-interface)#passive-interface
 ```
 R16(config)#router eigrp PITER
 R16(config-router)#address-family ipv4 autonomous-system 1
-R16(config-router-af)#network 172.16.100.0 255.255.255.0
-R16(config-router-af)#network 172.16.10.0 255.255.255.0
-R16(config-router-af)#network 172.22.0.0 255.255.0.0
-R16(config-router-af)#network 172.23.0.0 255.255.0.0
+R16(config-router-af)#network 172.16.100.0 0.0.0.255
+R16(config-router-af)#network 172.16.10.0 0.0.0.255
+R16(config-router-af)#network 172.22.0.0 0.0.255.255
+R16(config-router-af)#network 172.23.0.0 0.0.255.255
 R16(config-router-af)#eigrp router-id 16.16.16.16
 R16(config-router-af)#af-interface e0/0.1
 R16(config-router-af-interface)#passive-interface
@@ -78,7 +78,7 @@ R16(config-router-af-interface)#passive-interface
 ```
 R32(config)#router eigrp PITER
 R32(config-router)#address-family ipv4 autonomous-system 1
-R32(config-router-af)#network 172.23.0.0 255.255.0.0
+R32(config-router-af)#network 172.23.0.0 0.0.255.255
 R32(config-router-af)#eigrp router-id 32.32.32.32
 R32(config-router)#address-family ipv6 autonomous-system 1
 R32(config-router-af)#eigrp router-id 32.32.32.32
