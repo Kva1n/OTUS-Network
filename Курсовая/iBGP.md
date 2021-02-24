@@ -20,9 +20,11 @@
 
 
 
-#### Настроим iBGP между маршрутизаторами R14  и R15:
+### Настроим iBGP между маршрутизаторами R14  и R15:
 
-Поднимем loopback интерфейсы и включим их в процесс OSPF: :
+![iBGP_MSK](./iBGP_MSK.jpg)
+
+**Поднимем loopback интерфейсы и включим их в процесс OSPF:**
 
 ```
 R14(config)#int lo0
@@ -40,7 +42,7 @@ R15(config-if)#ipv6 address 2001:BB:FF:C20:222:222:222:222/128
 R15(config-if)#ipv6 ospf 1 area 0
 ```
 
-Настроим iBGP
+**Настроим iBGP:**
 
 ```
 R14(config)#router bgp 1001
@@ -62,11 +64,16 @@ R15(config-router)#address-family ipv6
 R15(config-router-af)#neighbor 2001:BB:FF:C20:111:111:111:111 activate
 ```
 
-Настроим iBGP в провайдере Триада
+
+
+### Настроим iBGP в провайдере Триада
+
+![iBGP_Triada](./iBGP_Triada.jpg)
 
 ```
 R24(config)#int lo0
 R24(config-if)#ip address 10.24.24.24 255.255.255.255
+R24(config-if)#ipv6 address 2001:BB:FF:AA:24:24:24:24/128
 R24(config-if)#ip router isis
 R24(config)#router bgp 520
 R24(config-router)#neighbor 10.23.23.23 remote-as 520
@@ -75,11 +82,22 @@ R24(config-router)#neighbor 10.26.26.26 remote-as 520
 R24(config-router)#neighbor 10.23.23.23 update-source lo0
 R24(config-router)#neighbor 10.25.25.25 update-source lo0
 R24(config-router)#neighbor 10.26.26.26 update-source lo0
+R24(config-router)#neighbor 2001:BB:FF:AA:23:23:23:23 remote-as 520
+R24(config-router)#neighbor 2001:BB:FF:AA:25:25:25:25 remote-as 520
+R24(config-router)#neighbor 2001:BB:FF:AA:26:26:26:26 remote-as 520
+R24(config-router)#neighbor 2001:BB:FF:AA:23:23:23:23 update-source lo0
+R24(config-router)#neighbor 2001:BB:FF:AA:25:25:25:25 update-source lo0
+R24(config-router)#neighbor 2001:BB:FF:AA:26:26:26:26 update-source lo0
+R24(config-router)#address-family ipv6
+R24(config-router-af)#neighbor 2001:BB:FF:AA:26:26:26:26 activate
+R24(config-router-af)#neighbor 2001:BB:FF:AA:25:25:25:25 activate
+R24(config-router-af)#neighbor 2001:BB:FF:AA:23:23:23:23 activate
 ```
 
 ```
 R23(config)#int lo0
 R23(config-if)#ip address 10.23.23.23 255.255.255.255
+R23(config-if)#ipv6 address 2001:BB:FF:AA:23:23:23:23/128
 R23(config-if)#ip router isis
 R23(config)#router bgp 520
 R23(config-router)#neighbor 10.24.24.24 remote-as 520
@@ -88,11 +106,22 @@ R23(config-router)#neighbor 10.26.26.26 remote-as 520
 R23(config-router)#neighbor 10.24.24.24 update-source lo0
 R23(config-router)#neighbor 10.25.25.25 update-source lo0
 R23(config-router)#neighbor 10.26.26.26 update-source lo0
+R23(config-router)#neighbor 2001:BB:FF:AA:24:24:24:24 remote-as 520
+R23(config-router)#neighbor 2001:BB:FF:AA:25:25:25:25 remote-as 520
+R23(config-router)#neighbor 2001:BB:FF:AA:26:26:26:26 remote-as 520
+R23(config-router)#neighbor 2001:BB:FF:AA:24:24:24:24 update-source lo0
+R23(config-router)#neighbor 2001:BB:FF:AA:25:25:25:25 update-source lo0
+R23(config-router)#neighbor 2001:BB:FF:AA:26:26:26:26 update-source lo0
+R23(config-router)#address-family ipv6
+R23(config-router-af)#neighbor 2001:BB:FF:AA:26:26:26:26 activate
+R23(config-router-af)#neighbor 2001:BB:FF:AA:25:25:25:25 activate
+R23(config-router-af)#neighbor 2001:BB:FF:AA:24:24:24:24 activate
 ```
 
 ```
 R25(config)#int lo0
 R25(config-if)#ip address 10.25.25.25 255.255.255.255
+R25(config-if)#ipv6 address 2001:BB:FF:AA:25:25:25:25/128
 R25(config-if)#ip router isis
 R25(config)#router bgp 520
 R25(config-router)#neighbor 10.23.23.23 remote-as 520
@@ -101,11 +130,22 @@ R25(config-router)#neighbor 10.26.26.26 remote-as 520
 R25(config-router)#neighbor 10.23.23.23 update-source lo0
 R25(config-router)#neighbor 10.24.24.24 update-source lo0
 R25(config-router)#neighbor 10.26.26.26 update-source lo0
+R25(config-router)#neighbor 2001:BB:FF:AA:24:24:24:24 remote-as 520
+R25(config-router)#neighbor 2001:BB:FF:AA:26:26:26:26 remote-as 520
+R25(config-router)#neighbor 2001:BB:FF:AA:23:23:23:23 remote-as 520
+R25(config-router)#neighbor 2001:BB:FF:AA:24:24:24:24 update-source lo0
+R25(config-router)#neighbor 2001:BB:FF:AA:26:26:26:26 update-source lo0
+R25(config-router)#neighbor 2001:BB:FF:AA:23:23:23:23 update-source lo0
+R25(config-router)#address-family ipv6
+R25(config-router-af)#neighbor 2001:BB:FF:AA:24:24:24:24 activate
+R25(config-router-af)#neighbor 2001:BB:FF:AA:23:23:23:23 activate
+R25(config-router-af)#neighbor 2001:BB:FF:AA:26:26:26:26 activate
 ```
 
 ```
 R26(config)#int lo0
 R26(config-if)#ip address 10.26.26.26 255.255.255.255
+R26(config-if)#ipv6 address 2001:BB:FF:AA:26:26:26:26/128
 R26(config-if)#ip router isis
 R26(config)#router bgp 520
 R26(config-router)#neighbor 10.23.23.23 remote-as 520
@@ -114,9 +154,21 @@ R26(config-router)#neighbor 10.25.25.25 remote-as 520
 R26(config-router)#neighbor 10.23.23.23 update-source lo0
 R26(config-router)#neighbor 10.24.24.24 update-source lo0
 R26(config-router)#neighbor 10.25.25.25 update-source lo0
+R26(config-router)#neighbor 2001:BB:FF:AA:23:23:23:23 remote-as 520
+R26(config-router)#neighbor 2001:BB:FF:AA:24:24:24:24 remote-as 520
+R26(config-router)#neighbor 2001:BB:FF:AA:25:25:25:25 remote-as 520
+R26(config-router)#neighbor 2001:BB:FF:AA:23:23:23:23 update-source lo0
+R26(config-router)#neighbor 2001:BB:FF:AA:24:24:24:24 update-source lo0
+R26(config-router)#neighbor 2001:BB:FF:AA:25:25:25:25 update-source lo0
+R26(config-router)#address-family ipv6
+R26(config-router-af)#neighbor 2001:BB:FF:AA:23:23:23:23 activate
+R26(config-router-af)#neighbor 2001:BB:FF:AA:24:24:24:24 activate
+R26(config-router-af)#neighbor 2001:BB:FF:AA:25:25:25:25 activate
 ```
 
-Настроим роутеры в офисе Москва так что бы приоритетным провайдером стал Ламас:
+
+
+### Настроим роутеры в офисе Москва так что бы приоритетным провайдером стал Ламас:
 
 ![IiBGP1](./iBGP1.jpg)
 
@@ -163,7 +215,9 @@ Tracing the route to 2001:BB:FF:E6:0:520:D24:E00
   6 2001:BB:FF:E6:0:520:D24:E00 1 msec 0 msec 1 msec
 ```
 
-Настроим офис Санкт-Петербург чтобы трафик распределялся по 2 линкам:
+
+
+### Настроим офис Санкт-Петербург чтобы трафик распределялся по 2 линкам:
 
 ![iBGP2](./iBGP2.jpg)
 
@@ -175,7 +229,7 @@ R18(config-router-af)#address-family ipv6
 R18(config-router-af)#maximum-paths 2 
 ```
 
-Проверим:
+**Проверим:**
 
 ```
 R18#trace 2001:BB:FF:A140:0:520:D25:E00
@@ -207,15 +261,18 @@ VRF info: (vrf in name/id, vrf out name/id)
 ```
 
 ```
-R18#trace 2001:BB:FF:A140:0:520:D23:E01
+R18>trace 2001:BB:FF:C360:CE:0:D27:E00
 Type escape sequence to abort.
-Tracing the route to 2001:BB:FF:A140:0:520:D23:E01
+Tracing the route to 2001:BB:FF:C360:CE:0:D27:E00
 
-  1 2001:BB:FF:C130:0:520:D26:E03 0 msec
+  1 2001:BB:FF:C130:0:520:D26:E03 1 msec
     2001:BB:FF:C120:0:520:D24:E03 1 msec
     2001:BB:FF:C130:0:520:D26:E03 0 msec
-  2 2001:BB:FF:A110:0:520:D23:E02 [AS 520] 1 msec
+  2 2001:BB:FF:A120:0:520:D26:E00 [AS 520] 1 msec
+    2001:BB:FF:A130:0:520:D25:E02 0 msec
+    2001:BB:FF:A120:0:520:D26:E00 10 msec
+  3 2001:BB:FF:C360:CE:0:D27:E00 36 msec
     2001:BB:FF:A130:0:520:D25:E02 1 msec
-    2001:BB:FF:A110:0:520:D23:E02 1 msec
+    2001:BB:FF:C360:CE:0:D27:E00 1 msec
 ```
 
