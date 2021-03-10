@@ -379,7 +379,7 @@ Queued Packets: 0
 
 **Поделим адреса сети на 2 диапазона и назначим их на R12 и R13, так же исключим из выдачи адреса 192.168.5.1-192.168.5.20 будем считать они зарезервированы.**
 
-<img src="C:\Users\Protos\Documents\GitHub\OTUS-Network\Курсовая\MIP_DHCP.jpg" alt="MIP_DHCP" style="zoom: 80%;" />
+<img src="./MIP_DHCP.jpg" alt="MIP_DHCP" style="zoom: 80%;" />
 
 ```
 R12(config)#ip dhcp excluded-address 192.168.5.1 192.168.5.20
